@@ -1,0 +1,444 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kit Concurso Questões</title>
+<meta name="description" content="App de questões comentadas do Kit Concurso: treine por matéria, faça simulados e revise seus erros.">
+<meta name="theme-color" content="#0d1b2a">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: caderno de prova no celular — uma coluna, cartões de matéria, alternativas como bolhas de gabarito */
+:root {
+  --paper: #f3f5f9; --sheet: #ffffff; --ink: #0d1b2a; --ink-2: #4a5870; --line: #dbe1ea;
+  --navy: #0d1b2a; --on-navy: #eef2f8; --on-navy-2: #a9b6c9;
+  --amber: #f4b73e; --amber-ink: #8a5a00; --amber-shadow: #c48a17;
+  --ok: #1d8a52; --ok-bg: #e7f6ee; --no: #c93a3f; --no-bg: #fdecec;
+  --gold: #e2b65a;
+  --pt: #2f6fd6; --rlm: #7b4fd1; --inf: #0e9488; --cons: #d1495b; --adm: #d9822b;
+  --display: "Bricolage Grotesque", "Arial Black", system-ui, sans-serif;
+  --body: "Figtree", "Segoe UI", system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, "Courier New", monospace;
+  --r: 16px; --shadow: 0 1px 2px rgba(13,27,42,.06), 0 8px 24px rgba(13,27,42,.07);
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --paper: #0b1420; --sheet: #121e2d; --ink: #e9eef6; --ink-2: #a3b0c3; --line: #24344a;
+  --navy: #07101a; --amber-ink: #f6c25c; --ok: #4cc488; --ok-bg: #12301f; --no: #f07a7e; --no-bg: #3a1a1c;
+  --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.3); color-scheme: dark } }
+:root[data-theme="dark"] {
+  --paper: #0b1420; --sheet: #121e2d; --ink: #e9eef6; --ink-2: #a3b0c3; --line: #24344a;
+  --navy: #07101a; --amber-ink: #f6c25c; --ok: #4cc488; --ok-bg: #12301f; --no: #f07a7e; --no-bg: #3a1a1c;
+  --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.3); color-scheme: dark }
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { margin: 0; background: var(--paper); color: var(--ink); font: 400 16px/1.55 var(--body); -webkit-font-smoothing: antialiased; min-height: 100vh; }
+h1, h2, h3 { font-family: var(--display); line-height: 1.1; margin: 0; letter-spacing: -.02em; text-wrap: balance; }
+p { margin: 0; }
+button { font: inherit; color: inherit; }
+button:focus-visible, a:focus-visible, input:focus-visible { outline: 3px solid var(--pt); outline-offset: 2px; }
+.wrap { width: 100%; max-width: 680px; margin: 0 auto; padding-inline: 16px; }
+.label { font: 700 11.5px/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--amber-ink); }
+.muted { color: var(--ink-2); }
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+
+/* topo */
+.top { background: var(--navy); color: var(--on-navy); position: sticky; top: env(safe-area-inset-top, 0px); z-index: 10; }
+.top .wrap { display: flex; align-items: center; gap: 12px; min-height: 60px; }
+.brand { font: 800 18px/1 var(--display); flex: 1; }
+.brand b { color: var(--amber); font-weight: 800; }
+.icon-btn { background: rgba(255,255,255,.08); border: 0; color: var(--on-navy); border-radius: 12px; min-width: 44px; height: 44px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 0 12px; cursor: pointer; font-weight: 600; font-size: 14px; }
+.icon-btn:hover { background: rgba(255,255,255,.16); }
+.icon-btn svg { width: 20px; height: 20px; }
+.plan-chip { font: 700 11px/1 var(--mono); letter-spacing: .1em; text-transform: uppercase; padding: 7px 10px; border-radius: 999px; border: 1.5px solid var(--amber); color: var(--amber); }
+.plan-chip.pro { border-color: var(--gold); background: var(--gold); color: #1a1200; }
+
+main { padding-block: 22px 48px; }
+.stack { display: flex; flex-direction: column; gap: 16px; }
+
+/* botões */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 0; border-radius: 999px; cursor: pointer; font-weight: 700; font-size: 16px; padding: 15px 22px; min-height: 50px; text-decoration: none; transition: transform .1s; }
+.btn:active { transform: translateY(2px); }
+.btn.primary { background: var(--amber); color: #1a1200; box-shadow: 0 4px 0 var(--amber-shadow); }
+.btn.ghost { background: transparent; border: 2px solid var(--line); color: var(--ink); }
+.btn.ghost:hover { border-color: var(--ink-2); }
+.btn.block { width: 100%; }
+.btn svg { width: 20px; height: 20px; flex: none; }
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+
+/* entrada */
+.gate { min-height: calc(100vh - 60px); display: flex; align-items: center; padding-block: 32px; }
+.gate-card { background: var(--sheet); border: 1px solid var(--line); border-radius: 22px; padding: 28px 22px; box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 16px; width: 100%; }
+.gate-card h1 { font-size: clamp(28px, 7vw, 36px); }
+.field { display: flex; flex-direction: column; gap: 8px; }
+.field label { font-weight: 700; font-size: 14px; }
+.field input { font: 600 18px/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; padding: 15px 16px; border-radius: 12px; border: 2px solid var(--line); background: var(--paper); color: var(--ink); width: 100%; }
+.field input:focus { border-color: var(--amber); outline: none; }
+.err { color: var(--no); font-size: 14px; font-weight: 600; }
+
+/* resumo */
+.hello { display: flex; align-items: center; gap: 18px; background: var(--navy); color: var(--on-navy); border-radius: 22px; padding: 20px; }
+.ring { position: relative; width: 92px; height: 92px; flex: none; }
+.ring svg { width: 92px; height: 92px; transform: rotate(-90deg); }
+.ring span { position: absolute; inset: 0; display: grid; place-items: center; font: 800 22px/1 var(--display); }
+.hello h1 { font-size: 23px; }
+.hello p { color: var(--on-navy-2); font-size: 14.5px; margin-top: 6px; }
+.kpis { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.kpi { background: var(--sheet); border: 1px solid var(--line); border-radius: 14px; padding: 12px; }
+.kpi b { display: block; font: 800 24px/1 var(--display); font-variant-numeric: tabular-nums; }
+.kpi span { font-size: 12.5px; color: var(--ink-2); }
+
+.actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.action { text-align: left; background: var(--sheet); border: 1px solid var(--line); border-radius: 16px; padding: 16px; cursor: pointer; display: flex; flex-direction: column; gap: 6px; min-height: 108px; box-shadow: var(--shadow); }
+.action:hover { border-color: var(--ink-2); }
+.action svg { width: 26px; height: 26px; color: var(--amber-ink); }
+.action b { font-size: 16px; }
+.action span { font-size: 13px; color: var(--ink-2); line-height: 1.35; }
+.action:disabled { opacity: .5; cursor: not-allowed; }
+
+.section-title { display: flex; align-items: baseline; justify-content: space-between; margin-top: 8px; }
+.section-title h2 { font-size: 21px; }
+.subjects { display: flex; flex-direction: column; gap: 10px; }
+.subject { display: grid; grid-template-columns: 8px minmax(0, 1fr) auto; gap: 14px; align-items: center; background: var(--sheet); border: 1px solid var(--line); border-radius: 16px; padding: 14px 14px 14px 0; cursor: pointer; text-align: left; overflow: hidden; }
+.subject:hover { border-color: var(--ink-2); }
+.subject .stripe { align-self: stretch; background: var(--c); }
+.subject h3 { font-family: var(--body); font-size: 16.5px; font-weight: 700; letter-spacing: 0; }
+.subject .meta { font-size: 13px; color: var(--ink-2); margin-top: 3px; font-variant-numeric: tabular-nums; }
+.bar { height: 6px; background: var(--paper); border-radius: 6px; overflow: hidden; margin-top: 9px; }
+.bar i { display: block; height: 100%; background: var(--c); border-radius: 6px; }
+.subject .go { width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; background: var(--paper); }
+.subject .go svg { width: 18px; height: 18px; }
+
+.upsell { border: 2px solid var(--gold); background: #0e0e13; color: #f3efe6; border-radius: 18px; padding: 18px; display: flex; flex-direction: column; gap: 10px; }
+.upsell b { color: var(--gold); }
+.upsell p { color: #c9c2b2; font-size: 14.5px; }
+.upsell .btn { background: var(--gold); color: #1a1200; align-self: flex-start; }
+.upsell .btn.ghost { background: transparent; color: #f3efe6; border: 2px solid rgba(226,182,90,.5); }
+
+/* questão */
+.qhead { display: flex; align-items: center; gap: 10px; }
+.qhead .who { flex: 1; min-width: 0; }
+.qhead .who b { display: block; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.qhead .who span { font: 600 12.5px/1.2 var(--mono); color: var(--ink-2); }
+.timer { font: 700 14px/1 var(--mono); background: var(--sheet); border: 1px solid var(--line); border-radius: 999px; padding: 9px 12px; font-variant-numeric: tabular-nums; }
+.progress { height: 6px; background: var(--line); border-radius: 6px; overflow: hidden; }
+.progress i { display: block; height: 100%; background: var(--amber); transition: width .3s; }
+.qcard { background: var(--sheet); border: 1px solid var(--line); border-radius: 20px; padding: 20px 18px; box-shadow: var(--shadow); }
+.qtag { display: inline-flex; align-items: center; gap: 7px; font: 700 11.5px/1 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--c); margin-bottom: 12px; }
+.qtag i { width: 9px; height: 9px; border-radius: 3px; background: var(--c); }
+.qtext { font-size: 17.5px; font-weight: 500; line-height: 1.55; }
+.alts { display: flex; flex-direction: column; gap: 10px; margin-top: 18px; }
+.alt { display: grid; grid-template-columns: 38px minmax(0, 1fr); gap: 12px; align-items: center; text-align: left; background: var(--paper); border: 2px solid transparent; border-radius: 14px; padding: 11px 13px 11px 10px; cursor: pointer; min-height: 56px; font-size: 15.5px; line-height: 1.45; transition: border-color .15s, background .15s; }
+.alt:hover:not(:disabled) { border-color: var(--line); }
+.alt .l { width: 38px; height: 38px; border-radius: 50%; border: 2px solid var(--ink-2); display: grid; place-items: center; font: 700 15px/1 var(--mono); color: var(--ink-2); background: var(--sheet); }
+.alt:disabled { cursor: default; }
+.alt.ok { background: var(--ok-bg); border-color: var(--ok); }
+.alt.ok .l { background: var(--ok); border-color: var(--ok); color: #fff; }
+.alt.no { background: var(--no-bg); border-color: var(--no); }
+.alt.no .l { background: var(--no); border-color: var(--no); color: #fff; }
+.alt.dim { opacity: .55; }
+.alt.picked .l { background: var(--ink); border-color: var(--ink); color: var(--sheet); }
+.feedback { border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 6px; animation: rise .25s ease-out; }
+.feedback.ok { background: var(--ok-bg); border: 1.5px solid var(--ok); }
+.feedback.no { background: var(--no-bg); border: 1.5px solid var(--no); }
+.feedback h3 { font-size: 19px; display: flex; align-items: center; gap: 8px; }
+.feedback.ok h3 { color: var(--ok); } .feedback.no h3 { color: var(--no); }
+.feedback h3 svg { width: 22px; height: 22px; }
+.feedback p { font-size: 15px; line-height: 1.55; }
+@keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.qnav { display: flex; gap: 10px; }
+.qnav .btn { flex: 1; }
+
+/* resultado */
+.result { text-align: center; background: var(--sheet); border: 1px solid var(--line); border-radius: 22px; padding: 28px 20px; box-shadow: var(--shadow); display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.result .big { font: 800 64px/1 var(--display); letter-spacing: -.03em; font-variant-numeric: tabular-nums; }
+.result h1 { font-size: 26px; }
+.breakdown { width: 100%; display: flex; flex-direction: column; gap: 8px; margin-top: 8px; text-align: left; }
+.breakdown div { display: flex; justify-content: space-between; gap: 10px; padding: 10px 12px; background: var(--paper); border-radius: 10px; font-size: 14.5px; font-variant-numeric: tabular-nums; }
+
+/* modal */
+.sheet-modal { position: fixed; inset: 0; z-index: 30; background: rgba(5,10,18,.6); display: flex; align-items: flex-end; justify-content: center; padding: 16px; padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px)); }
+.sheet-modal .box { background: var(--sheet); border-radius: 22px; padding: 22px; width: 100%; max-width: 480px; display: flex; flex-direction: column; gap: 14px; }
+.sheet-modal h2 { font-size: 22px; }
+.opts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.opt { border: 2px solid var(--line); background: var(--paper); border-radius: 12px; padding: 12px 6px; cursor: pointer; font-weight: 700; text-align: center; }
+.opt[aria-pressed="true"] { border-color: var(--amber); background: var(--sheet); }
+.opt small { display: block; font-weight: 500; font-size: 12px; color: var(--ink-2); }
+.toast { position: fixed; left: 50%; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: var(--ink); color: var(--paper); padding: 12px 18px; border-radius: 999px; font-weight: 600; font-size: 14px; z-index: 40; }
+footer { text-align: center; font-size: 12.5px; color: var(--ink-2); padding-block: 8px 28px; }
+</style>
+
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <div class="brand">Kit <b>Concurso</b></div>
+    <span class="plan-chip" id="plan-chip" hidden></span>
+    <button class="icon-btn" id="btn-home" type="button" aria-label="Voltar ao início" hidden>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>
+    </button>
+  </div>
+</header>
+
+<main class="wrap" id="app"></main>
+<div id="modal-root"></div>
+<div class="toast" id="toast" role="status" hidden></div>
+<footer class="wrap">Material de estudo independente. Não garante aprovação.</footer>
+
+<script>
+/* =========================================================
+   CONFIGURAÇÃO — edite antes de publicar
+   ========================================================= */
+var CONFIG = {
+  codigoEssencial: "Essencial-Cz",   // código entregue a quem comprou o Kit Essencial
+  codigoPro: "KITPRO2484-Cz",               // código entregue a quem comprou o Kit PRO
+  linkPro: ""                         // link da página de vendas (ex.: "https://seusite.com/#oferta")
+};
+
+var DATA = {"materias": {"pt": "Língua Portuguesa", "rlm": "Raciocínio Lógico", "inf": "Informática", "cons": "Direito Constitucional", "adm": "Direito Administrativo"}, "questoes": [{"id": "pt01", "m": "pt", "t": "ess", "q": "Assinale a alternativa em que o uso do acento grave está <b>correto<\/b>.", "a": ["O candidato referiu-se à esta questão.", "Ficamos frente à frente com o examinador.", "Ele começou a trabalhar à partir de segunda-feira.", "Entreguei o relatório à diretora do setor.", "Fomos à pé até a prefeitura."], "r": 3, "c": "“Entregar” pede a preposição “a” e “diretora” aceita o artigo “a”: a + a = à. Nas demais: não há crase antes de verbo (partir), de palavra masculina (pé), de pronome demonstrativo “esta” nem em palavras repetidas (frente a frente)."}, {"id": "pt02", "m": "pt", "t": "ess", "q": "Em qual frase a concordância verbal segue a norma-padrão?", "a": ["Devem haver vagas para o cadastro reserva.", "Haviam muitos candidatos na sala.", "Fazem três anos que estudo para concursos.", "Precisam-se de servidores qualificados.", "Vendem-se apartamentos no centro."], "r": 4, "c": "Com “se” apassivador, o verbo concorda com o sujeito: apartamentos são vendidos → vendem-se. “Haver” (existir) e “fazer” (tempo) são impessoais e ficam no singular, inclusive o auxiliar (deve haver). Com “precisar de”, o “se” é índice de indeterminação: precisa-se."}, {"id": "pt03", "m": "pt", "t": "ess", "q": "Assinale a frase pontuada corretamente.", "a": ["Os candidatos aprovados, receberão o resultado por e-mail.", "Maria, a coordenadora do curso explicou o edital.", "Ontem à noite, revisamos toda a matéria de Português.", "Estudei muito mas, não consegui terminar a prova.", "O servidor entregou, os documentos ao chefe."], "r": 2, "c": "O adjunto adverbial deslocado para o início pode ser separado por vírgula. Erros: vírgula entre sujeito e verbo (A), aposto sem a vírgula de fechamento (B), vírgula depois do “mas” em vez de antes (D) e vírgula entre verbo e complemento (E)."}, {"id": "pt04", "m": "pt", "t": "ess", "q": "Quanto à colocação pronominal, está de acordo com a norma-padrão:", "a": ["Me disseram que a prova foi adiada.", "Não esqueça-se de levar documento com foto.", "Quem te contou sobre o novo edital?", "Tinha avisado-me sobre o prazo de inscrição.", "Entregarei-lhe o material amanhã."], "r": 2, "c": "O pronome interrogativo “quem” atrai o pronome oblíquo (próclise). Na norma-padrão não se inicia frase com pronome oblíquo (A), a negação exige próclise (B), não há ênclise ao particípio (D) e, com futuro do presente sem palavra atrativa, usa-se a mesóclise: entregar-lhe-ei (E)."}, {"id": "pt05", "m": "pt", "t": "ess", "q": "Em “O servidor <u>que<\/u> foi aprovado tomará posse”, a palavra destacada é:", "a": ["advérbio.", "conjunção coordenativa.", "conjunção integrante.", "pronome relativo.", "preposição."], "r": 3, "c": "“Que” retoma o termo anterior (o servidor) e pode ser trocado por “o qual”: o servidor o qual foi aprovado. Esse é o teste do pronome relativo."}, {"id": "pt06", "m": "pt", "t": "ess", "q": "A regência verbal está correta em:", "a": ["Ele visa ao cargo de técnico.", "Obedeça o regulamento do concurso.", "Cheguei no local da prova cedo.", "Assisti o filme ontem à noite.", "Prefiro estudar do que trabalhar."], "r": 0, "c": "“Visar” no sentido de almejar pede a preposição “a”: visa ao cargo. Correções: assisti ao filme, prefiro estudar a trabalhar, obedeça ao regulamento, cheguei ao local."}, {"id": "pt07", "m": "pt", "t": "ess", "q": "Em “Estudou bastante; <u>contudo<\/u>, não foi aprovado”, a conjunção destacada expressa ideia de:", "a": ["adição.", "oposição.", "alternância.", "conclusão.", "explicação."], "r": 1, "c": "“Contudo” é conjunção adversativa, como mas, porém, todavia e entretanto. Indica oposição ao que foi dito antes."}, {"id": "pt08", "m": "pt", "t": "ess", "q": "Assinale a alternativa em que o acento grave é <b>facultativo<\/b>.", "a": ["Fez tudo às pressas.", "Refiro-me à sua proposta.", "Saímos às 8h.", "Agiu à revelia do chefe.", "Dirigiu-se à secretaria."], "r": 1, "c": "Antes de pronome possessivo feminino singular (sua, minha, nossa), a crase é facultativa: refiro-me à sua / a sua proposta. Nas demais, a crase é obrigatória (horas, locuções femininas e palavra feminina com artigo)."}, {"id": "pt09", "m": "pt", "t": "pro", "q": "Em qual frase o acento grave foi empregado <b>incorretamente<\/b>?", "a": ["Refiro-me à professora de Português.", "Chegamos à cidade às 9h.", "Estou disposto à colaborar com a equipe.", "Fizemos uma visita à Bahia.", "Ela se dedica à leitura todos os dias."], "r": 2, "c": "Não há crase antes de verbo: disposto <b>a<\/b> colaborar. Em D, “Bahia” aceita artigo (volto <b>da<\/b> Bahia), por isso a crase está correta."}, {"id": "pt10", "m": "pt", "t": "pro", "q": "Assinale a frase em que a concordância verbal está de acordo com a norma-padrão.", "a": ["Existe muitas dúvidas sobre o edital.", "Houveram muitos problemas na aplicação.", "Existiam várias opções de cargo no edital.", "Fazem dias que não estudo.", "Deve existir muitas formas de resolver."], "r": 2, "c": "“Existir” é verbo pessoal e concorda com o sujeito: opções existiam. Já “haver” (existir) e “fazer” (tempo) são impessoais e ficam no singular: houve problemas, faz dias. Em E, o correto é “devem existir”."}, {"id": "pt11", "m": "pt", "t": "pro", "q": "Assinale a frase em que a vírgula foi empregada corretamente.", "a": ["João, venha até a sala dos professores.", "Os servidores do setor, foram promovidos.", "O diretor solicitou, que todos chegassem cedo.", "Comprei, livros e cadernos novos.", "A prova de ontem, foi difícil."], "r": 0, "c": "A vírgula isola o vocativo (João). Nas demais, a vírgula separa indevidamente sujeito e verbo (B e E) ou verbo e complemento (C e D)."}, {"id": "pt12", "m": "pt", "t": "pro", "q": "Na frase “<u>Embora<\/u> estivesse cansado, continuou estudando”, a conjunção pode ser substituída, sem alterar o sentido, por:", "a": ["Porque estava cansado", "Como estava cansado", "Apesar de estar cansado", "Se estivesse cansado", "Já que estava cansado"], "r": 2, "c": "“Embora” é concessiva: indica um fato que poderia impedir a ação, mas não impede. “Apesar de” mantém esse sentido. As alternativas A, B e E são causais, e D é condicional."}, {"id": "pt13", "m": "pt", "t": "pro", "q": "Segundo a gramática normativa, a regência do verbo <b>implicar<\/b> (no sentido de acarretar) está correta em:", "a": ["A decisão implicou com atrasos.", "A decisão implicou para atrasos.", "A decisão implicou a atrasos.", "A decisão implicou em atrasos.", "A decisão implicou atrasos."], "r": 4, "c": "No sentido de acarretar, “implicar” é transitivo direto e não pede preposição: implicou atrasos. A forma “implicar em” é comum na fala, mas é considerada errada pelas bancas."}, {"id": "pt14", "m": "pt", "t": "pro", "q": "Quanto à colocação pronominal, está correta a frase:", "a": ["Me empresta o livro de questões?", "Far-se-á a convocação na próxima semana.", "Ninguém avisou-me sobre a mudança.", "Quando vi-o na fila, acenei.", "Eu tinha visto-o no dia da prova."], "r": 1, "c": "Com futuro do presente e sem palavra atrativa, usa-se a mesóclise: far-se-á. Erros: iniciar frase com pronome (A), ênclise com palavra atrativa “ninguém” (C) e “quando” (D) e ênclise ao particípio (E)."}, {"id": "pt15", "m": "pt", "t": "pro", "q": "Assinale a alternativa em que <b>todas<\/b> as palavras estão grafadas de acordo com o Novo Acordo Ortográfico.", "a": ["ideia, voo, micro-ondas", "idéia, vôo, microondas", "ideia, vôo, micro-ondas", "idéia, voo, microondas", "ideia, voo, microondas"], "r": 0, "c": "Ditongos abertos em paroxítonas perderam o acento (ideia), o hiato “oo” também (voo), e prefixo terminado na mesma vogal que inicia a palavra seguinte pede hífen (micro-ondas)."}, {"id": "pt16", "m": "pt", "t": "pro", "q": "Em “Todos se perguntavam <u>por que<\/u> a prova foi adiada”, a forma destacada está correta porque:", "a": ["deveria ser escrita junta.", "é uma explicação, equivalente a “pois”.", "aparece no fim da frase.", "é uma pergunta indireta, equivalente a “por qual motivo”.", "é um substantivo."], "r": 3, "c": "Em perguntas diretas ou indiretas, usa-se “por que” separado e sem acento, quando equivale a “por qual motivo”."}, {"id": "pt17", "m": "pt", "t": "pro", "q": "Na oração “Choveu muito durante a prova”, o sujeito é classificado como:", "a": ["composto.", "simples.", "oculto.", "indeterminado.", "inexistente (oração sem sujeito)."], "r": 4, "c": "Verbos que indicam fenômenos da natureza são impessoais: a oração não tem sujeito."}, {"id": "pt18", "m": "pt", "t": "pro", "q": "Em “Os candidatos, que estudaram muito, foram aprovados”, a oração entre vírgulas indica que:", "a": ["todos os candidatos estudaram muito e foram aprovados.", "nenhum candidato estudou.", "a vírgula é facultativa e não altera o sentido.", "trata-se de oração adverbial causal.", "só uma parte dos candidatos foi aprovada."], "r": 0, "c": "A oração adjetiva explicativa, entre vírgulas, generaliza: atribui a característica a todos. Sem vírgulas, seria restritiva: só os que estudaram foram aprovados."}, {"id": "pt19", "m": "pt", "t": "pro", "q": "Na frase “Ele é rápido como um raio”, ocorre a figura de linguagem chamada:", "a": ["metáfora.", "comparação.", "metonímia.", "eufemismo.", "ironia."], "r": 1, "c": "Há um conectivo comparativo explícito (“como”), o que caracteriza a comparação. Sem o conectivo (“Ele é um raio”), seria metáfora."}, {"id": "pt20", "m": "pt", "t": "pro", "q": "Ao passar “A comissão <b>analisará<\/b> os recursos” para a voz passiva analítica, obtém-se:", "a": ["Os recursos foram analisados pela comissão.", "A comissão será analisada pelos recursos.", "Os recursos analisarão a comissão.", "Os recursos serão analisados pela comissão.", "Analisar-se-ão os recursos pela comissão."], "r": 3, "c": "O objeto direto (os recursos) vira sujeito, o verbo “ser” fica no mesmo tempo do original (futuro: serão) e o sujeito vira agente da passiva (pela comissão)."}, {"id": "rlm01", "m": "rlm", "t": "ess", "q": "Qual das frases abaixo é uma <b>proposição<\/b> lógica?", "a": ["Brasília é a capital do Brasil.", "Tomara que eu passe.", "x + 2 = 5", "Que horas são?", "Estude para a prova!"], "r": 0, "c": "Proposição é uma frase declarativa que pode ser julgada como verdadeira ou falsa. Perguntas, ordens e desejos não são proposições, e “x + 2 = 5” é uma sentença aberta, pois o valor depende de x."}, {"id": "rlm02", "m": "rlm", "t": "ess", "q": "A negação de “Pedro estuda <b>e<\/b> Maria trabalha” é:", "a": ["Pedro estuda ou Maria trabalha.", "Se Pedro estuda, Maria não trabalha.", "Pedro não estuda e Maria trabalha.", "Pedro não estuda e Maria não trabalha.", "Pedro não estuda ou Maria não trabalha."], "r": 4, "c": "Lei de De Morgan: ~(p ∧ q) ≡ ~p ∨ ~q. Nega as duas partes e troca o “e” por “ou”."}, {"id": "rlm03", "m": "rlm", "t": "ess", "q": "A negação de “Se chove, então a rua fica molhada” é:", "a": ["Se não chove, a rua não fica molhada.", "Chove e a rua não fica molhada.", "Não chove ou a rua fica molhada.", "Se a rua não fica molhada, não chove.", "Não chove e a rua fica molhada."], "r": 1, "c": "~(p → q) ≡ p ∧ ~q. O macete é “Mantém a primeira E nega a segunda” (MA-NE). A alternativa D é a contrapositiva, que é equivalente, não a negação."}, {"id": "rlm04", "m": "rlm", "t": "ess", "q": "Uma frase equivalente a “Se estudo, então passo” é:", "a": ["Se passo, então estudo.", "Se não estudo, então não passo.", "Se não passo, então não estudo.", "Estudo e não passo.", "Não estudo e passo."], "r": 2, "c": "A contrapositiva é equivalente à condicional: p → q ≡ ~q → ~p. Inverte a ordem e nega as duas partes. As alternativas A e B são erros clássicos (recíproca e inversa)."}, {"id": "rlm05", "m": "rlm", "t": "ess", "q": "A negação de “Todos os candidatos são aprovados” é:", "a": ["Algum candidato não é aprovado.", "Algum candidato é aprovado.", "Nenhum candidato é reprovado.", "Nenhum candidato é aprovado.", "Todos os candidatos são reprovados."], "r": 0, "c": "A negação de “todo A é B” é “algum A não é B”. Para desmentir que todos foram aprovados, basta existir um que não foi."}, {"id": "rlm06", "m": "rlm", "t": "ess", "q": "Uma tabela-verdade de uma proposição com 4 proposições simples distintas tem quantas linhas?", "a": ["4", "8", "12", "16", "32"], "r": 3, "c": "O número de linhas é 2ⁿ, em que n é o número de proposições simples: 2⁴ = 16."}, {"id": "rlm07", "m": "rlm", "t": "ess", "q": "Um produto custava R$ 200,00 e teve aumento de 10%. Depois, sofreu desconto de 10%. O preço final é:", "a": ["R$ 200,00", "R$ 198,00", "R$ 202,00", "R$ 180,00", "R$ 220,00"], "r": 1, "c": "200 × 1,10 = 220. Depois, 220 × 0,90 = 198. Aumento e desconto de mesma porcentagem não se anulam: o resultado é sempre menor que o valor inicial."}, {"id": "rlm08", "m": "rlm", "t": "ess", "q": "De quantas maneiras diferentes 4 candidatos podem ocupar 4 cadeiras em fila?", "a": ["4", "12", "16", "24", "256"], "r": 3, "c": "Permutação simples: P₄ = 4! = 4 × 3 × 2 × 1 = 24."}, {"id": "rlm09", "m": "rlm", "t": "pro", "q": "A negação de “Pedro é alto <b>ou<\/b> Ana é baixa” é:", "a": ["Pedro não é alto e Ana não é baixa.", "Pedro é alto e Ana é baixa.", "Se Pedro é alto, Ana não é baixa.", "Pedro não é alto e Ana é baixa.", "Pedro não é alto ou Ana não é baixa."], "r": 0, "c": "Lei de De Morgan: ~(p ∨ q) ≡ ~p ∧ ~q. Nega as duas partes e troca “ou” por “e”."}, {"id": "rlm10", "m": "rlm", "t": "pro", "q": "Uma proposição equivalente a “Se chove, então não vou à praia” é:", "a": ["Chove ou vou à praia.", "Se vou à praia, então chove.", "Chove e vou à praia.", "Se não chove, então vou à praia.", "Não chove ou não vou à praia."], "r": 4, "c": "p → q ≡ ~p ∨ q (nega a primeira, troca por “ou”, mantém a segunda). Aqui q é “não vou à praia”, que permanece igual."}, {"id": "rlm11", "m": "rlm", "t": "pro", "q": "A proposição “Se estudo, então passo” é <b>falsa<\/b> quando:", "a": ["nunca é falsa.", "estudo e passo.", "não estudo e passo.", "não estudo e não passo.", "estudo e não passo."], "r": 4, "c": "A condicional só é falsa quando a primeira parte é verdadeira e a segunda é falsa (V → F)."}, {"id": "rlm12", "m": "rlm", "t": "pro", "q": "Em um concurso com 250 inscritos, 30% faltaram à prova. Quantos candidatos faltaram?", "a": ["25", "30", "70", "75", "175"], "r": 3, "c": "30% de 250 = 0,30 × 250 = 75."}, {"id": "rlm13", "m": "rlm", "t": "pro", "q": "De quantas maneiras é possível formar uma comissão de 3 pessoas escolhidas entre 5 servidores?", "a": ["6", "10", "15", "20", "60"], "r": 1, "c": "Na comissão a ordem não importa: combinação. C(5,3) = 5! ÷ (3! × 2!) = 120 ÷ 12 = 10."}, {"id": "rlm14", "m": "rlm", "t": "pro", "q": "Uma urna tem 4 bolas vermelhas e 6 azuis. Retirando uma bola ao acaso, a probabilidade de ela ser vermelha é:", "a": ["4%", "10%", "40%", "60%", "66%"], "r": 2, "c": "Casos favoráveis ÷ casos possíveis = 4 ÷ 10 = 0,4 = 40%."}, {"id": "rlm15", "m": "rlm", "t": "pro", "q": "Considere: “Se o candidato estuda, então é aprovado” e “O candidato não foi aprovado”. Conclui-se que:", "a": ["o candidato estudou e não foi aprovado.", "nada se pode concluir.", "o candidato será aprovado na próxima.", "o candidato estudou.", "o candidato não estudou."], "r": 4, "c": "Modus tollens: se p → q é verdadeiro e q é falso, então p é falso. O candidato não estudou."}, {"id": "rlm16", "m": "rlm", "t": "pro", "q": "Qual dos argumentos abaixo é <b>inválido<\/b>?", "a": ["Se chove, a rua molha. Se a rua molha, há poças. Logo, se chove, há poças.", "Se chove, a rua molha. Choveu. Logo, a rua molhou.", "Se chove, a rua molha. A rua não molhou. Logo, não choveu.", "Se chove, a rua molha. A rua molhou. Logo, choveu.", "Chove ou faz sol. Não chove. Logo, faz sol."], "r": 3, "c": "É a falácia da afirmação do consequente: a rua pode ter molhado por outro motivo, como uma mangueira."}, {"id": "rlm17", "m": "rlm", "t": "pro", "q": "Em um grupo de 50 candidatos, 28 fizeram a prova de Português, 22 a de Matemática e 8 fizeram as duas. Quantos não fizeram nenhuma das duas?", "a": ["0", "8", "42", "50", "2"], "r": 1, "c": "Fizeram pelo menos uma: 28 + 22 − 8 = 42. Nenhuma: 50 − 42 = 8."}, {"id": "rlm18", "m": "rlm", "t": "pro", "q": "Na sequência 3, 7, 11, 15, ..., qual é o 10º termo?", "a": ["39", "40", "43", "35", "47"], "r": 0, "c": "É uma progressão aritmética de razão 4. a₁₀ = 3 + (10 − 1) · 4 = 3 + 36 = 39."}, {"id": "rlm19", "m": "rlm", "t": "pro", "q": "Um capital de R$ 2.000 aplicado a juros simples de 3% ao mês durante 5 meses gera juros de:", "a": ["R$ 60", "R$ 150", "R$ 300", "R$ 318", "R$ 2.300"], "r": 2, "c": "J = C · i · t = 2000 · 0,03 · 5 = R$ 300."}, {"id": "rlm20", "m": "rlm", "t": "pro", "q": "Dois ônibus saem juntos de um terminal às 8h. Um retorna ao ponto de partida a cada 20 minutos e o outro a cada 30 minutos. Eles sairão juntos novamente às:", "a": ["8h30", "8h50", "9h", "9h30", "10h"], "r": 2, "c": "MMC(20, 30) = 60 minutos. Saem juntos de novo uma hora depois, às 9h."}, {"id": "inf01", "m": "inf", "t": "ess", "q": "No Windows 10, o atalho que abre o Explorador de Arquivos é:", "a": ["Windows + E", "Windows + L", "Ctrl + Shift + Esc", "Alt + F4", "Windows + D"], "r": 0, "c": "Windows + E abre o Explorador de Arquivos. Windows + D mostra a área de trabalho, Windows + L bloqueia o computador, Ctrl + Shift + Esc abre o Gerenciador de Tarefas e Alt + F4 fecha a janela ativa."}, {"id": "inf02", "m": "inf", "t": "ess", "q": "No Excel, a célula A1 contém 10 e a célula A2 contém 0. A fórmula <b>=A1/A2<\/b> retorna:", "a": ["#REF!", "0", "10", "#VALOR!", "#DIV/0!"], "r": 4, "c": "Divisão por zero sempre retorna o erro #DIV/0!."}, {"id": "inf03", "m": "inf", "t": "ess", "q": "Ao copiar a fórmula <b>=A1*$B$1<\/b> da célula C1 para a célula C2, a nova fórmula será:", "a": ["=A2*$B$1", "=B1*$C$1", "=A2*B1", "=A1*$B$1", "=A2*$B$2"], "r": 0, "c": "A1 é referência relativa e ajusta a linha ao descer (vira A2). $B$1 é absoluta, travada pelos cifrões, e não muda."}, {"id": "inf04", "m": "inf", "t": "ess", "q": "O malware que <b>se propaga sozinho<\/b> pela rede, sem precisar de um arquivo hospedeiro, é o:", "a": ["worm", "cavalo de Troia", "spyware", "adware", "vírus"], "r": 0, "c": "O worm (verme) explora falhas e se espalha automaticamente entre computadores. O vírus precisa de um arquivo hospedeiro e de ser executado."}, {"id": "inf05", "m": "inf", "t": "ess", "q": "O protocolo usado para o <b>envio<\/b> de e-mails é o:", "a": ["HTTP", "FTP", "POP3", "IMAP", "SMTP"], "r": 4, "c": "SMTP envia as mensagens. POP3 e IMAP são usados para receber. Macete: SMTP = “Sua Mensagem Tá Partindo”."}, {"id": "inf06", "m": "inf", "t": "ess", "q": "Ao enviar um e-mail, o campo que oculta os destinatários uns dos outros é o:", "a": ["Responder a todos", "Para", "Cc", "Cco", "Assunto"], "r": 3, "c": "Cco (cópia carbono oculta) envia a mensagem sem que os demais destinatários vejam quem está nesse campo."}, {"id": "inf07", "m": "inf", "t": "ess", "q": "O golpe em que o criminoso envia uma mensagem falsa, se passando por uma instituição, para roubar senhas e dados é chamado de:", "a": ["firewall", "botnet", "ransomware", "phishing", "backdoor"], "r": 3, "c": "Phishing (de “fishing”, pescar) usa e-mails, SMS ou sites falsos para enganar a vítima e capturar dados."}, {"id": "inf08", "m": "inf", "t": "ess", "q": "No Excel, a função que retorna o maior valor de um intervalo é:", "a": ["=MÉDIA()", "=MÁXIMO()", "=MAIOR()", "=CONT.SE()", "=SOMA()"], "r": 1, "c": "=MÁXIMO(A1:A10) retorna o maior valor do intervalo. Cuidado: =MAIOR() existe, mas exige um segundo argumento (o k-ésimo maior valor), como =MAIOR(A1:A10;2)."}, {"id": "inf09", "m": "inf", "t": "pro", "q": "No Windows 10, o atalho que bloqueia o computador é:", "a": ["Windows + D", "Windows + E", "Windows + L", "Alt + Tab", "Ctrl + Alt + Tab"], "r": 2, "c": "Windows + L bloqueia a sessão (L de “lock”). Windows + D mostra a área de trabalho e Windows + E abre o Explorador de Arquivos."}, {"id": "inf10", "m": "inf", "t": "pro", "q": "No Excel, as células A1, A2 e A3 contêm 2, 4 e 6. A fórmula <b>=MÉDIA(A1:A3)<\/b> retorna:", "a": ["12", "#VALOR!", "3", "4", "6"], "r": 3, "c": "(2 + 4 + 6) ÷ 3 = 12 ÷ 3 = 4."}, {"id": "inf11", "m": "inf", "t": "pro", "q": "No Excel, a célula B2 contém 6,5. A fórmula <b>=SE(B2>=7;\"Aprovado\";\"Reprovado\")<\/b> retorna:", "a": ["#NOME?", "Aprovado", "Reprovado", "6,5", "VERDADEIRO"], "r": 2, "c": "O teste B2>=7 é falso (6,5 é menor que 7), então a função retorna o terceiro argumento: “Reprovado”."}, {"id": "inf12", "m": "inf", "t": "pro", "q": "O protocolo que indica uma conexão criptografada com o site, normalmente representada por um cadeado no navegador, é o:", "a": ["POP3", "HTTP", "HTTPS", "FTP", "SMTP"], "r": 2, "c": "HTTPS é o HTTP com camada de segurança (criptografia). Usa a porta 443 por padrão."}, {"id": "inf13", "m": "inf", "t": "pro", "q": "O malware que criptografa os arquivos da vítima e exige pagamento para liberá-los é o:", "a": ["spyware", "ransomware", "adware", "keylogger", "worm"], "r": 1, "c": "O ransomware sequestra os dados e cobra um resgate. A melhor proteção é manter backups atualizados fora do computador."}, {"id": "inf14", "m": "inf", "t": "pro", "q": "O tipo de backup que copia todos os arquivos alterados desde o último backup <b>completo<\/b> é o:", "a": ["espelhado", "incremental", "diferencial", "normal", "de cópia"], "r": 2, "c": "O diferencial acumula tudo o que mudou desde o último completo. O incremental copia só o que mudou desde o último backup de qualquer tipo."}, {"id": "inf15", "m": "inf", "t": "pro", "q": "A memória que perde seu conteúdo quando o computador é desligado é a:", "a": ["SSD", "HD", "memória flash", "ROM", "RAM"], "r": 4, "c": "A RAM é volátil: guarda os dados enquanto o computador está ligado. ROM, SSD, HD e memória flash não são voláteis."}, {"id": "inf16", "m": "inf", "t": "pro", "q": "O equipamento responsável por interligar redes diferentes, como a rede da casa e a internet, é o:", "a": ["monitor", "switch", "hub", "roteador", "repetidor"], "r": 3, "c": "O roteador encaminha dados entre redes diferentes. O switch interliga dispositivos dentro da mesma rede local."}, {"id": "inf17", "m": "inf", "t": "pro", "q": "No Linux, o comando que mostra o diretório em que o usuário está no momento é:", "a": ["mkdir", "rm", "ls", "cd", "pwd"], "r": 4, "c": "pwd (print working directory) mostra o caminho da pasta atual. ls lista o conteúdo e cd muda de pasta."}, {"id": "inf18", "m": "inf", "t": "pro", "q": "Ao assinar digitalmente um documento, o remetente utiliza:", "a": ["a sua própria chave privada.", "uma senha compartilhada com o destinatário.", "a chave pública do destinatário.", "a chave privada do destinatário.", "a sua própria chave pública."], "r": 0, "c": "A assinatura é feita com a chave privada do remetente e conferida com a chave pública dele. Isso garante autenticidade, integridade e não repúdio."}, {"id": "inf19", "m": "inf", "t": "pro", "q": "No Excel, a fórmula <b>=CONT.SE(B2:B20;\"Aprovado\")<\/b>:", "a": ["soma os valores das células com a palavra Aprovado.", "conta quantas células do intervalo contêm Aprovado.", "retorna VERDADEIRO se houver algum Aprovado.", "procura Aprovado em outra planilha.", "conta as células vazias do intervalo."], "r": 1, "c": "CONT.SE conta as células de um intervalo que atendem ao critério informado."}, {"id": "inf20", "m": "inf", "t": "pro", "q": "O Gmail e o Microsoft 365, acessados pelo navegador sem instalação local, são exemplos do modelo de computação em nuvem:", "a": ["PaaS", "SaaS", "LAN", "DaaS local", "IaaS"], "r": 1, "c": "SaaS (software como serviço) entrega o programa pronto para uso pela internet."}, {"id": "cons01", "m": "cons", "t": "ess", "q": "São fundamentos da República Federativa do Brasil (art. 1º da CF/88), <b>exceto<\/b>:", "a": ["a cidadania.", "a dignidade da pessoa humana.", "a erradicação da pobreza.", "o pluralismo político.", "a soberania."], "r": 2, "c": "Erradicar a pobreza é um <b>objetivo<\/b> (art. 3º), não um fundamento. Os fundamentos formam o macete SO-CI-DI-VA-PLU."}, {"id": "cons02", "m": "cons", "t": "ess", "q": "O remédio constitucional adequado para garantir o acesso a informações <b>pessoais<\/b> do impetrante em bancos de dados de entidades governamentais é:", "a": ["habeas data.", "mandado de segurança.", "mandado de injunção.", "ação popular.", "habeas corpus."], "r": 0, "c": "O habeas data serve para conhecer ou retificar informações relativas à <b>própria pessoa<\/b> do impetrante (art. 5º, LXXII)."}, {"id": "cons03", "m": "cons", "t": "ess", "q": "Qualquer cidadão é parte legítima para propor ação que vise a anular ato lesivo ao patrimônio público e à moralidade administrativa. Trata-se da:", "a": ["mandado de segurança coletivo.", "ação civil pública.", "ação popular.", "ação direta de inconstitucionalidade.", "reclamação."], "r": 2, "c": "Ação popular (art. 5º, LXXIII). O autor fica isento de custas e do ônus da sucumbência, salvo comprovada má-fé."}, {"id": "cons04", "m": "cons", "t": "ess", "q": "É cargo privativo de brasileiro <b>nato<\/b>:", "a": ["Senador.", "Ministro do Supremo Tribunal Federal.", "Governador de Estado.", "Ministro da Fazenda.", "Deputado Federal."], "r": 1, "c": "Art. 12, § 3º: Presidente e Vice, Presidentes da Câmara e do Senado, Ministro do STF, carreira diplomática, oficial das Forças Armadas e Ministro de Estado da Defesa. Deputados e senadores comuns podem ser naturalizados."}, {"id": "cons05", "m": "cons", "t": "ess", "q": "Segundo a Constituição, o voto é <b>facultativo<\/b> para:", "a": ["os estrangeiros.", "os servidores públicos.", "os maiores de 18 e menores de 70 anos.", "os conscritos.", "os analfabetos."], "r": 4, "c": "Art. 14, § 1º, II: o voto é facultativo para analfabetos, maiores de 70 anos e maiores de 16 e menores de 18 anos. Estrangeiros e conscritos (durante o serviço militar obrigatório) não podem se alistar."}, {"id": "cons06", "m": "cons", "t": "ess", "q": "A idade mínima exigida para concorrer ao cargo de Senador é de:", "a": ["18 anos.", "21 anos.", "30 anos.", "35 anos.", "40 anos."], "r": 3, "c": "Art. 14, § 3º, VI: 35 anos para Presidente, Vice-Presidente e Senador; 30 para Governador e Vice; 21 para Deputado, Prefeito, Vice-Prefeito e juiz de paz; 18 para Vereador."}, {"id": "cons07", "m": "cons", "t": "ess", "q": "Sobre o prazo de validade do concurso público, a Constituição estabelece que será de:", "a": ["até 2 anos, prorrogável uma vez, por igual período.", "até 2 anos, improrrogável.", "até 4 anos, prorrogável uma vez.", "até 5 anos, sem prorrogação.", "até 1 ano, prorrogável por igual período."], "r": 0, "c": "Art. 37, III. Atenção: o prazo é de <b>até<\/b> 2 anos (pode ser menor), e a prorrogação, se houver, é pelo mesmo período fixado."}, {"id": "cons08", "m": "cons", "t": "ess", "q": "De acordo com a CF/88, o servidor nomeado para cargo de provimento efetivo em virtude de concurso público adquire estabilidade após:", "a": ["5 anos de efetivo exercício.", "a posse, imediatamente.", "1 ano de efetivo exercício.", "2 anos de efetivo exercício.", "3 anos de efetivo exercício."], "r": 4, "c": "Art. 41: estabilidade após <b>3 anos<\/b> de efetivo exercício, sendo obrigatória a avaliação especial de desempenho por comissão instituída para essa finalidade."}, {"id": "cons09", "m": "cons", "t": "pro", "q": "É <b>objetivo fundamental<\/b> da República Federativa do Brasil (art. 3º da CF/88):", "a": ["garantir o desenvolvimento nacional.", "a cidadania.", "a dignidade da pessoa humana.", "a soberania.", "o pluralismo político."], "r": 0, "c": "Objetivos começam com verbo (construir, garantir, erradicar, promover). As demais alternativas são fundamentos do art. 1º."}, {"id": "cons10", "m": "cons", "t": "pro", "q": "O remédio constitucional cabível quando a falta de norma regulamentadora torna inviável o exercício de um direito previsto na Constituição é o:", "a": ["ação popular.", "habeas corpus.", "habeas data.", "mandado de segurança.", "mandado de injunção."], "r": 4, "c": "O mandado de injunção (art. 5º, LXXI) combate a omissão do legislador em regulamentar um direito constitucional."}, {"id": "cons11", "m": "cons", "t": "pro", "q": "O mandato de um Senador da República é de:", "a": ["4 anos.", "5 anos.", "6 anos.", "8 anos.", "10 anos."], "r": 3, "c": "Senadores têm mandato de 8 anos (art. 46, § 1º). A renovação do Senado é alternada, de 4 em 4 anos, por um terço e dois terços."}, {"id": "cons12", "m": "cons", "t": "pro", "q": "João tem 72 anos e é alfabetizado. Para ele, o voto é:", "a": ["proibido.", "obrigatório apenas nas eleições municipais.", "permitido só com autorização judicial.", "obrigatório.", "facultativo."], "r": 4, "c": "O voto é facultativo para os maiores de 70 anos, para os analfabetos e para quem tem entre 16 e 18 anos (art. 14, § 1º, II)."}, {"id": "cons13", "m": "cons", "t": "pro", "q": "Segundo a CF/88, havendo compatibilidade de horários, é permitida a acumulação remunerada de:", "a": ["dois cargos em comissão.", "dois cargos técnicos quaisquer.", "dois cargos de professor.", "um cargo de policial e um de professor, em qualquer caso.", "três cargos de profissional de saúde."], "r": 2, "c": "As hipóteses do art. 37, XVI, são: dois de professor; um de professor com outro técnico ou científico; dois privativos de profissionais de saúde com profissões regulamentadas."}, {"id": "cons14", "m": "cons", "t": "pro", "q": "A divulgação oficial dos atos administrativos, para que a população possa conhecê-los e fiscalizá-los, está ligada ao princípio da:", "a": ["moralidade.", "publicidade.", "eficiência.", "legalidade.", "impessoalidade."], "r": 1, "c": "Publicidade é a transparência dos atos da Administração, ressalvadas as hipóteses de sigilo previstas em lei."}, {"id": "cons15", "m": "cons", "t": "pro", "q": "Compete <b>privativamente<\/b> à União legislar sobre:", "a": ["direito financeiro.", "direito penitenciário.", "direito tributário.", "direito penal.", "direito urbanístico."], "r": 3, "c": "Direito penal está no art. 22 (privativa da União). As demais alternativas são de competência concorrente (art. 24)."}, {"id": "cons16", "m": "cons", "t": "pro", "q": "Para ser aprovada, uma proposta de emenda à Constituição precisa ser votada:", "a": ["em dois turnos, por três quintos, e depois sancionada pelo Presidente.", "em um turno, por maioria simples, em cada Casa.", "em dois turnos, por maioria absoluta, em sessão conjunta.", "em dois turnos, por três quintos dos votos, em cada Casa.", "em um turno, por dois terços, só na Câmara."], "r": 3, "c": "Art. 60, § 2º. A emenda é promulgada pelas Mesas da Câmara e do Senado, sem sanção ou veto do Presidente."}, {"id": "cons17", "m": "cons", "t": "pro", "q": "Não pode ser objeto de deliberação proposta de emenda tendente a abolir:", "a": ["o voto obrigatório.", "a separação dos Poderes.", "a reeleição para cargos do Executivo.", "o sistema presidencialista.", "o número de ministros do STF."], "r": 1, "c": "A separação dos Poderes é cláusula pétrea (art. 60, § 4º, III). O voto protegido é o direto, secreto, universal e periódico, e não o voto obrigatório."}, {"id": "cons18", "m": "cons", "t": "pro", "q": "Nos crimes de responsabilidade, o Presidente da República é julgado:", "a": ["pelo Senado Federal, após autorização da Câmara por dois terços.", "pela Câmara dos Deputados, por maioria absoluta.", "pelo STJ.", "pelo Congresso Nacional em sessão conjunta.", "pelo STF, após autorização do Senado."], "r": 0, "c": "A Câmara admite a acusação por 2/3 e o Senado julga, em sessão presidida pelo presidente do STF (arts. 51, I, 52, I, e 86)."}, {"id": "cons19", "m": "cons", "t": "pro", "q": "A comissão parlamentar de inquérito:", "a": ["pode condenar os investigados à prisão.", "é criada por requerimento de um terço dos membros, para apurar fato determinado e por prazo certo.", "só pode ser criada pelo Senado.", "não tem poderes de investigação.", "dispensa a indicação de fato determinado."], "r": 1, "c": "Art. 58, § 3º. A CPI investiga e encaminha suas conclusões ao Ministério Público; não aplica penas."}, {"id": "cons20", "m": "cons", "t": "pro", "q": "De acordo com o art. 144 da Constituição, cabem às polícias militares:", "a": ["a polícia de fronteiras.", "as funções de polícia judiciária e a apuração de infrações penais.", "a polícia ostensiva e a preservação da ordem pública.", "o patrulhamento ostensivo das rodovias federais.", "a segurança dos estabelecimentos penais."], "r": 2, "c": "Art. 144, § 5º. Polícia judiciária é das polícias civis e da PF; rodovias federais, da PRF; estabelecimentos penais, das polícias penais."}, {"id": "adm01", "m": "adm", "t": "ess", "q": "A criação, pelo Município, de uma Secretaria de Saúde dentro da própria estrutura da Prefeitura é exemplo de:", "a": ["privatização.", "concessão de serviço público.", "descentralização por outorga.", "descentralização por delegação.", "desconcentração."], "r": 4, "c": "Desconcentração é a distribuição de competências <b>dentro da mesma pessoa jurídica<\/b>, criando órgãos sem personalidade própria e com hierarquia. Se fosse criada uma nova pessoa jurídica (como uma autarquia), seria descentralização."}, {"id": "adm02", "m": "adm", "t": "ess", "q": "São entidades da administração pública <b>indireta<\/b>:", "a": ["concessionárias e permissionárias de serviço público.", "ministérios e secretarias.", "autarquias, fundações públicas, empresas públicas e sociedades de economia mista.", "União, Estados, Distrito Federal e Municípios.", "Câmara dos Deputados e Senado Federal."], "r": 2, "c": "A administração indireta é formada pelas quatro entidades com personalidade jurídica própria. Ministérios e secretarias são órgãos da administração direta; os entes federativos compõem a administração direta."}, {"id": "adm03", "m": "adm", "t": "ess", "q": "A sociedade de economia mista se caracteriza por:", "a": ["ser pessoa jurídica de direito público.", "ter capital exclusivamente público.", "ser criada diretamente por lei.", "ser constituída sob a forma de sociedade anônima.", "não poder explorar atividade econômica."], "r": 3, "c": "A sociedade de economia mista é pessoa jurídica de direito privado, tem a criação <b>autorizada<\/b> por lei, adota a forma de <b>S.A.<\/b> e o ente público detém a maioria das ações com direito a voto. Capital exclusivamente público é característica da empresa pública."}, {"id": "adm04", "m": "adm", "t": "ess", "q": "São atributos do poder de polícia:", "a": ["hierarquia, disciplina e tutela.", "discricionariedade, autoexecutoriedade e coercibilidade.", "competência, finalidade e forma.", "legalidade, moralidade e eficiência.", "vinculação, revogação e anulação."], "r": 1, "c": "Macete DAC: <b>D<\/b>iscricionariedade, <b>A<\/b>utoexecutoriedade e <b>C<\/b>oercibilidade. A alternativa C traz elementos do ato administrativo."}, {"id": "adm05", "m": "adm", "t": "ess", "q": "Quanto aos elementos do ato administrativo, são considerados, em regra, <b>discricionários<\/b>:", "a": ["competência e forma.", "finalidade e competência.", "motivo e objeto.", "forma e finalidade.", "objeto e competência."], "r": 2, "c": "Motivo e objeto formam o <b>mérito<\/b> administrativo, onde há margem de escolha. Competência, finalidade e forma são vinculados."}, {"id": "adm06", "m": "adm", "t": "ess", "q": "A revogação de um ato administrativo:", "a": ["é obrigatória sempre que o ato for ilegal.", "atinge os atos vinculados e os direitos adquiridos.", "ocorre por ilegalidade e produz efeitos retroativos.", "pode ser feita pelo Poder Judiciário no exercício da função jurisdicional.", "ocorre por razões de conveniência e oportunidade, com efeitos a partir de então (ex nunc)."], "r": 4, "c": "Revogação = ato <b>legal<\/b> que deixou de ser conveniente e oportuno; efeitos <b>ex nunc<\/b>; só a Administração revoga, respeitando os direitos adquiridos. Ato ilegal é <b>anulado<\/b> (efeitos ex tunc)."}, {"id": "adm07", "m": "adm", "t": "ess", "q": "A responsabilidade civil do Estado pelos danos que seus agentes, nessa qualidade, causarem a terceiros é, como regra:", "a": ["objetiva, baseada na teoria do risco integral, sem excludentes.", "inexistente, pois o Estado não responde por atos de seus agentes.", "exclusiva do agente público causador do dano.", "subjetiva, exigindo prova de culpa do agente.", "objetiva, baseada na teoria do risco administrativo."], "r": 4, "c": "Art. 37, § 6º, da CF. A vítima não precisa provar culpa, apenas a conduta, o dano e o nexo causal. O Estado pode se defender com excludentes (culpa exclusiva da vítima, caso fortuito, força maior) e cobrar do agente que agiu com dolo ou culpa (ação regressiva)."}, {"id": "adm08", "m": "adm", "t": "ess", "q": "Na Lei 14.133/2021 (nova Lei de Licitações), <b>não<\/b> é uma modalidade de licitação:", "a": ["tomada de preços.", "pregão.", "concorrência.", "leilão.", "diálogo competitivo."], "r": 0, "c": "As modalidades atuais são pregão, concorrência, concurso, leilão e diálogo competitivo. Tomada de preços e convite deixaram de existir com a revogação da Lei 8.666/93."}, {"id": "adm09", "m": "adm", "t": "pro", "q": "O INSS, pessoa jurídica de direito público criada por lei para executar atividade típica de Estado, é um exemplo de:", "a": ["sociedade de economia mista.", "concessionária.", "órgão público.", "autarquia.", "empresa pública."], "r": 3, "c": "Autarquia: pessoa jurídica de direito público, criada por lei específica, que executa atividades típicas do Estado."}, {"id": "adm10", "m": "adm", "t": "pro", "q": "O chefe que, de forma excepcional e temporária, chama para si a competência de um subordinado pratica:", "a": ["revogação, decorrente do poder de polícia.", "outorga, decorrente do poder regulamentar.", "cassação, decorrente do poder vinculado.", "delegação, decorrente do poder disciplinar.", "avocação, decorrente do poder hierárquico."], "r": 4, "c": "Avocar é trazer para si a competência do subordinado. É uma das manifestações do poder hierárquico, assim como delegar, dar ordens e fiscalizar."}, {"id": "adm11", "m": "adm", "t": "pro", "q": "O atributo do ato administrativo que permite à Administração impor obrigações a terceiros, independentemente da concordância deles, é a:", "a": ["finalidade.", "presunção de legitimidade.", "tipicidade.", "imperatividade.", "motivação."], "r": 3, "c": "Imperatividade é o poder de impor o ato unilateralmente. Faz parte dos atributos PATI. Motivação e finalidade não são atributos."}, {"id": "adm12", "m": "adm", "t": "pro", "q": "A anulação de um ato administrativo ilegal produz efeitos:", "a": ["ex tunc, retroagindo à data do ato.", "somente após decisão do Senado.", "apenas para atos discricionários.", "somente se houver conveniência e oportunidade.", "ex nunc, apenas a partir da anulação."], "r": 0, "c": "A anulação retroage (ex tunc), porque o ato era ilegal desde o início. A revogação, por conveniência e oportunidade, tem efeitos ex nunc."}, {"id": "adm13", "m": "adm", "t": "pro", "q": "A criação de uma autarquia pelo Estado para prestar determinado serviço é exemplo de:", "a": ["descentralização por outorga.", "concentração.", "delegação a particular.", "hierarquia administrativa.", "desconcentração."], "r": 0, "c": "Ao criar uma nova pessoa jurídica por lei, o Estado descentraliza por outorga. Criar um órgão dentro da mesma pessoa seria desconcentração."}, {"id": "adm14", "m": "adm", "t": "pro", "q": "Pela Lei 14.133/2021, a modalidade de licitação para aquisição de bens e serviços comuns é o:", "a": ["convite.", "leilão.", "concurso.", "pregão.", "diálogo competitivo."], "r": 3, "c": "O pregão é a modalidade para bens e serviços comuns. O convite foi extinto pela nova lei."}, {"id": "adm15", "m": "adm", "t": "pro", "q": "O retorno à atividade do servidor aposentado é chamado, na Lei 8.112/1990, de:", "a": ["reintegração.", "recondução.", "reversão.", "aproveitamento.", "readaptação."], "r": 2, "c": "Reversão é o retorno do aposentado. Reintegração é a volta após demissão anulada, e aproveitamento é o retorno de quem estava em disponibilidade."}, {"id": "adm16", "m": "adm", "t": "pro", "q": "Segundo a Lei 8.112/1990, configura abandono de cargo a ausência intencional do servidor ao serviço por mais de:", "a": ["15 dias consecutivos.", "30 dias consecutivos.", "60 dias consecutivos.", "30 dias intercalados em 12 meses.", "60 dias intercalados em 12 meses."], "r": 1, "c": "Abandono: mais de 30 dias consecutivos (art. 138). Já 60 dias intercalados em 12 meses, sem causa justificada, caracterizam inassiduidade habitual (art. 139). Ambos levam à demissão."}, {"id": "adm17", "m": "adm", "t": "pro", "q": "A ação disciplinar quanto às infrações puníveis com advertência prescreve em:", "a": ["90 dias.", "180 dias.", "1 ano.", "2 anos.", "5 anos."], "r": 1, "c": "Art. 142: 180 dias para advertência, 2 anos para suspensão e 5 anos para demissão, cassação de aposentadoria e destituição de cargo em comissão."}, {"id": "adm18", "m": "adm", "t": "pro", "q": "A contratação de um artista consagrado pela crítica para um show em evento público, sem licitação, é hipótese de:", "a": ["diálogo competitivo.", "dispensa de licitação.", "inexigibilidade de licitação.", "licitação dispensada.", "pregão."], "r": 2, "c": "Art. 74, II, da Lei 14.133/2021: não há como comparar artistas de forma objetiva, por isso a competição é inviável."}, {"id": "adm19", "m": "adm", "t": "pro", "q": "De acordo com a Lei 9.784/1999, salvo disposição legal específica, o prazo para interpor recurso administrativo é de:", "a": ["5 dias.", "10 dias.", "15 dias.", "30 dias.", "60 dias."], "r": 1, "c": "Art. 59: 10 dias, contados da ciência ou da divulgação oficial da decisão recorrida."}, {"id": "adm20", "m": "adm", "t": "pro", "q": "Em caso de iminente perigo público, a autoridade competente pode usar a propriedade particular, assegurada indenização posterior se houver dano. Trata-se de:", "a": ["requisição administrativa.", "desapropriação.", "limitação administrativa.", "servidão administrativa.", "tombamento."], "r": 0, "c": "Art. 5º, XXV, da CF. A requisição é usada em situações urgentes, como enchentes, e a indenização vem depois, apenas se houver dano."}]};
+</script>
+<script>
+(function () {
+  var M = DATA.materias, Q = DATA.questoes, LET = "ABCDE";
+  var COLORS = { pt: "var(--pt)", rlm: "var(--rlm)", inf: "var(--inf)", cons: "var(--cons)", adm: "var(--adm)" };
+  var app = document.getElementById("app");
+  var KEY = "kitconcurso.v1";
+
+  /* ---------- armazenamento (por aparelho) ---------- */
+  var store = { plan: null, ans: {} };
+  try { var raw = localStorage.getItem(KEY); if (raw) store = Object.assign(store, JSON.parse(raw)); } catch (e) {}
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(store)); } catch (e) {} }
+
+  function available() { return Q.filter(function (q) { return store.plan === "pro" || q.t === "ess"; }); }
+  function lockedCount() { return store.plan === "pro" ? 0 : Q.filter(function (q) { return q.t === "pro"; }).length; }
+  function stats(list) {
+    var done = 0, ok = 0;
+    list.forEach(function (q) { var a = store.ans[q.id]; if (a) { done++; if (a.ok) ok++; } });
+    return { total: list.length, done: done, ok: ok, pct: done ? Math.round(ok / done * 100) : 0 };
+  }
+  function wrongList() { return available().filter(function (q) { var a = store.ans[q.id]; return a && !a.ok; }); }
+  function shuffle(a) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+
+  var ICON = {
+    play: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>',
+    clock: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2M9 2h6"/></svg>',
+    redo: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>',
+    shuffle: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 3h5v5M4 20 21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg>',
+    check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg>',
+    x: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>',
+    chev: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>',
+    trash: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>'
+  };
+
+  function toast(msg) {
+    var t = document.getElementById("toast"); t.textContent = msg; t.hidden = false;
+    clearTimeout(toast._t); toast._t = setTimeout(function () { t.hidden = true; }, 2200);
+  }
+  function header() {
+    var chip = document.getElementById("plan-chip"), home = document.getElementById("btn-home");
+    chip.hidden = !store.plan; chip.textContent = store.plan === "pro" ? "PRO" : "Essencial";
+    chip.className = "plan-chip" + (store.plan === "pro" ? " pro" : "");
+    home.hidden = !(store.plan && session);
+  }
+  document.getElementById("btn-home").addEventListener("click", function () { stopTimer(); session = null; render(); });
+
+  /* ---------- tela de acesso ---------- */
+  function gate() {
+    app.innerHTML =
+      '<section class="gate"><form class="gate-card" id="gate-form" novalidate>' +
+      '<span class="label">Área do aluno</span>' +
+      '<h1>Treine com as questões do seu kit</h1>' +
+      '<p class="muted">Digite o código de acesso que veio junto com o seu kit no e-mail da compra.</p>' +
+      '<div class="field"><label for="code">Código de acesso</label>' +
+      '<input id="code" name="code" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="Digite o seu código" required></div>' +
+      '<p class="err" id="gate-err" hidden>Código não reconhecido. Confira as letras e os números do e-mail da compra.</p>' +
+      '<button class="btn primary block" type="submit">Entrar</button>' +
+      '</form></section>';
+    document.getElementById("gate-form").addEventListener("submit", function (e) {
+      e.preventDefault();
+      var v = document.getElementById("code").value.trim().toUpperCase();
+      var plan = v && v === CONFIG.codigoPro.toUpperCase() ? "pro" : v && v === CONFIG.codigoEssencial.toUpperCase() ? "ess" : null;
+      if (!plan) { document.getElementById("gate-err").hidden = false; return; }
+      store.plan = plan; save(); render();
+      toast(plan === "pro" ? "Kit PRO liberado: 100 questões" : "Kit Essencial liberado: 40 questões");
+    });
+  }
+
+  /* ---------- início ---------- */
+  function home() {
+    var all = available(), s = stats(all), wrong = wrongList().length, circ = 2 * Math.PI * 40;
+    var subjects = Object.keys(M).map(function (k) {
+      var list = all.filter(function (q) { return q.m === k; }), st = stats(list);
+      return '<button class="subject" type="button" data-sub="' + k + '" style="--c:' + COLORS[k] + '">' +
+        '<span class="stripe" aria-hidden="true"></span><div><h3>' + esc(M[k]) + '</h3>' +
+        '<div class="meta">' + st.done + ' de ' + st.total + ' respondidas' + (st.done ? ' · ' + st.pct + '% de acerto' : '') + '</div>' +
+        '<div class="bar"><i style="width:' + (st.total ? st.done / st.total * 100 : 0) + '%"></i></div></div>' +
+        '<span class="go" aria-hidden="true">' + ICON.chev + '</span></button>';
+    }).join("");
+    var locked = lockedCount();
+    var upsell = locked ? '<div class="upsell"><span class="label" style="color:var(--gold)">Kit Concurso PRO</span>' +
+      '<p><b>+' + locked + ' questões comentadas</b> estão bloqueadas no seu plano. O PRO libera as 100 questões e aprofunda as 5 matérias.</p>' +
+      (CONFIG.linkPro ? '<a class="btn" href="' + esc(CONFIG.linkPro) + '" target="_blank" rel="noopener">Conhecer o PRO</a>' : '') +
+      '<button class="btn ghost" type="button" id="btn-code">Já tenho o código PRO</button></div>' : '';
+
+    app.innerHTML =
+      '<div class="stack">' +
+      '<section class="hello"><div class="ring" aria-label="' + s.pct + '% de acerto">' +
+      '<svg viewBox="0 0 92 92" aria-hidden="true"><circle cx="46" cy="46" r="40" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="9"/>' +
+      '<circle cx="46" cy="46" r="40" fill="none" stroke="#f4b73e" stroke-width="9" stroke-linecap="round" stroke-dasharray="' + circ + '" stroke-dashoffset="' + (circ * (1 - s.pct / 100)) + '"/></svg>' +
+      '<span>' + s.pct + '%</span></div><div><h1>' + (s.done ? 'Bom ritmo! Continue treinando.' : 'Vamos começar?') + '</h1>' +
+      '<p>' + (s.done ? 'Você já respondeu ' + s.done + ' das ' + s.total + ' questões do seu kit.' : 'Escolha uma matéria ou faça um simulado rápido.') + '</p></div></section>' +
+      '<div class="kpis"><div class="kpi"><b>' + s.done + '</b><span>respondidas</span></div><div class="kpi"><b>' + s.ok + '</b><span>acertos</span></div><div class="kpi"><b>' + wrong + '</b><span>para revisar</span></div></div>' +
+      '<div class="actions">' +
+      '<button class="action" type="button" id="btn-sim">' + ICON.clock + '<b>Simulado</b><span>Questões sorteadas de todas as matérias, com cronômetro.</span></button>' +
+      '<button class="action" type="button" id="btn-err"' + (wrong ? '' : ' disabled') + '>' + ICON.redo + '<b>Caderno de erros</b><span>' + (wrong ? 'Refaça as ' + wrong + ' questões que você errou.' : 'As questões que você errar aparecem aqui.') + '</span></button>' +
+      '</div>' +
+      '<div class="section-title"><h2>Treinar por matéria</h2><span class="label">' + s.total + ' questões</span></div>' +
+      '<div class="subjects">' + subjects + '</div>' + upsell +
+      '<button class="btn ghost" type="button" id="btn-reset">' + ICON.trash + 'Zerar meu progresso</button>' +
+      '</div>';
+
+    app.querySelectorAll("[data-sub]").forEach(function (b) {
+      b.addEventListener("click", function () { subjectSheet(b.dataset.sub); });
+    });
+    document.getElementById("btn-sim").addEventListener("click", simSheet);
+    document.getElementById("btn-err").addEventListener("click", function () { start(shuffle(wrongList()), "Caderno de erros", false); });
+    document.getElementById("btn-reset").addEventListener("click", resetSheet);
+    var bc = document.getElementById("btn-code"); if (bc) bc.addEventListener("click", function () { store.plan = null; save(); render(); });
+  }
+
+  /* ---------- janelas de opção ---------- */
+  function modal(html, bind) {
+    var root = document.getElementById("modal-root");
+    root.innerHTML = '<div class="sheet-modal" id="sm"><div class="box" role="dialog" aria-modal="true">' + html + '</div></div>';
+    var sm = document.getElementById("sm");
+    sm.addEventListener("click", function (e) { if (e.target === sm) close(); });
+    function close() { root.innerHTML = ""; }
+    bind(close);
+    var f = sm.querySelector("button"); if (f) f.focus();
+  }
+  function subjectSheet(k) {
+    var list = available().filter(function (q) { return q.m === k; });
+    var pending = list.filter(function (q) { return !store.ans[q.id]; });
+    modal('<span class="label">' + esc(M[k]) + '</span><h2>Como você quer treinar?</h2>' +
+      '<button class="btn primary block" type="button" id="o1"' + (pending.length ? '' : ' disabled') + '>Só as que ainda não fiz (' + pending.length + ')</button>' +
+      '<button class="btn ghost block" type="button" id="o2">Todas em ordem (' + list.length + ')</button>' +
+      '<button class="btn ghost block" type="button" id="o3">' + ICON.shuffle + 'Todas embaralhadas</button>', function (close) {
+      document.getElementById("o1").onclick = function () { close(); start(pending, M[k], false); };
+      document.getElementById("o2").onclick = function () { close(); start(list, M[k], false); };
+      document.getElementById("o3").onclick = function () { close(); start(shuffle(list), M[k], false); };
+    });
+  }
+  function simSheet() {
+    var all = available(), n = Math.min(20, all.length);
+    var choices = [10, 20, all.length].filter(function (v, i, a) { return v <= all.length && a.indexOf(v) === i; });
+    modal('<span class="label">Simulado</span><h2>Quantas questões?</h2><p class="muted">Sorteadas de todas as matérias. O cronômetro conta o tempo médio por questão, como na prova.</p>' +
+      '<div class="opts">' + choices.map(function (c) { return '<button class="opt" type="button" data-n="' + c + '" aria-pressed="' + (c === n) + '">' + c + '<small>~' + Math.round(c * 3) + ' min</small></button>'; }).join("") + '</div>' +
+      '<button class="btn primary block" type="button" id="go">' + ICON.play + 'Começar simulado</button>', function (close) {
+      document.querySelectorAll(".opt").forEach(function (o) { o.onclick = function () {
+        n = +o.dataset.n; document.querySelectorAll(".opt").forEach(function (x) { x.setAttribute("aria-pressed", x === o); }); }; });
+      document.getElementById("go").onclick = function () { close(); start(shuffle(all).slice(0, n), "Simulado", true); };
+    });
+  }
+  function resetSheet() {
+    modal('<h2>Zerar o progresso?</h2><p class="muted">Suas respostas e o caderno de erros neste aparelho serão apagados. O acesso ao kit continua.</p>' +
+      '<button class="btn primary block" type="button" id="yes" style="background:var(--no);color:#fff;box-shadow:none">Sim, zerar</button>' +
+      '<button class="btn ghost block" type="button" id="no">Cancelar</button>', function (close) {
+      document.getElementById("yes").onclick = function () { store.ans = {}; save(); close(); render(); toast("Progresso zerado"); };
+      document.getElementById("no").onclick = close;
+    });
+  }
+
+  /* ---------- sessão de questões ---------- */
+  var session = null, timerId = null;
+  function stopTimer() { if (timerId) { clearInterval(timerId); timerId = null; } }
+  function start(list, title, timed) {
+    if (!list.length) { toast("Nenhuma questão para mostrar"); return; }
+    session = { list: list, i: 0, title: title, timed: timed, picks: {}, t0: Date.now() };
+    stopTimer();
+    if (timed) timerId = setInterval(tick, 1000);
+    render(); window.scrollTo(0, 0);
+  }
+  function fmt(s) { var m = Math.floor(s / 60), r = s % 60; return (m < 10 ? "0" : "") + m + ":" + (r < 10 ? "0" : "") + r; }
+  function tick() { var el = document.getElementById("timer"); if (el) el.textContent = fmt(Math.floor((Date.now() - session.t0) / 1000)); }
+
+  function question() {
+    var s = session, q = s.list[s.i], pick = s.picks[q.id], answered = pick !== undefined;
+    var alts = q.a.map(function (a, i) {
+      var cls = "alt";
+      if (answered) { if (i === q.r) cls += " ok"; else if (i === pick) cls += " no"; else cls += " dim"; }
+      return '<button class="' + cls + '" type="button" data-i="' + i + '"' + (answered ? ' disabled' : '') + '>' +
+        '<span class="l">' + LET[i] + '</span><span>' + a + '</span></button>';
+    }).join("");
+    var fb = "";
+    if (answered) {
+      var ok = pick === q.r;
+      fb = '<div class="feedback ' + (ok ? 'ok' : 'no') + '" role="status"><h3>' + (ok ? ICON.check + 'Resposta certa!' : ICON.x + 'Não foi dessa vez') + '</h3>' +
+        '<p>' + (ok ? '' : '<b>Gabarito: ' + LET[q.r] + '.</b> ') + q.c + '</p></div>';
+    }
+    var last = s.i === s.list.length - 1;
+    app.innerHTML =
+      '<div class="stack">' +
+      '<div class="qhead"><div class="who"><b>' + esc(s.title) + '</b><span>Questão ' + (s.i + 1) + ' de ' + s.list.length + '</span></div>' +
+      (s.timed ? '<span class="timer" id="timer" aria-label="Tempo de simulado">' + fmt(Math.floor((Date.now() - s.t0) / 1000)) + '</span>' : '') + '</div>' +
+      '<div class="progress" aria-hidden="true"><i style="width:' + ((s.i + (answered ? 1 : 0)) / s.list.length * 100) + '%"></i></div>' +
+      '<article class="qcard" style="--c:' + COLORS[q.m] + '"><span class="qtag"><i></i>' + esc(M[q.m]) + '</span>' +
+      '<div class="qtext">' + q.q + '</div><div class="alts">' + alts + '</div></article>' + fb +
+      '<div class="qnav">' + (s.i > 0 ? '<button class="btn ghost" type="button" id="prev">Anterior</button>' : '') +
+      '<button class="btn primary" type="button" id="next"' + (answered ? '' : ' disabled') + '>' + (last ? 'Ver resultado' : 'Próxima') + '</button></div>' +
+      '</div>';
+
+    app.querySelectorAll(".alt").forEach(function (b) {
+      b.addEventListener("click", function () {
+        var i = +b.dataset.i; s.picks[q.id] = i;
+        var prev = store.ans[q.id] || { n: 0 };
+        store.ans[q.id] = { ok: i === q.r, n: prev.n + 1 }; save();
+        render();
+        var f = app.querySelector(".feedback"); if (f) f.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      });
+    });
+    var p = document.getElementById("prev"); if (p) p.onclick = function () { s.i--; render(); window.scrollTo(0, 0); };
+    document.getElementById("next").onclick = function () {
+      if (last) { s.done = true; stopTimer(); s.secs = Math.floor((Date.now() - s.t0) / 1000); }
+      else s.i++;
+      render(); window.scrollTo(0, 0);
+    };
+  }
+
+  function result() {
+    var s = session, ok = 0, by = {};
+    s.list.forEach(function (q) {
+      var r = s.picks[q.id] === q.r; if (r) ok++;
+      by[q.m] = by[q.m] || { ok: 0, n: 0 }; by[q.m].n++; if (r) by[q.m].ok++;
+    });
+    var pct = Math.round(ok / s.list.length * 100);
+    var msg = pct >= 80 ? "Excelente resultado!" : pct >= 60 ? "Bom resultado, continue assim." : "Revise os erros e tente de novo.";
+    var rows = Object.keys(by).map(function (k) { return '<div><span>' + esc(M[k]) + '</span><b>' + by[k].ok + ' / ' + by[k].n + '</b></div>'; }).join("");
+    var wrongHere = s.list.filter(function (q) { return s.picks[q.id] !== q.r; });
+    app.innerHTML =
+      '<div class="stack"><section class="result"><span class="label">' + esc(s.title) + '</span>' +
+      '<div class="big">' + ok + '/' + s.list.length + '</div><h1>' + msg + '</h1>' +
+      '<p class="muted">' + pct + '% de acerto' + (s.timed ? ' · tempo total ' + fmt(s.secs) : '') + '</p>' +
+      '<div class="breakdown">' + rows + '</div></section>' +
+      (wrongHere.length ? '<button class="btn primary block" type="button" id="redo">' + ICON.redo + 'Refazer as ' + wrongHere.length + ' que errei</button>' : '') +
+      '<button class="btn ghost block" type="button" id="back">Voltar ao início</button></div>';
+    var r = document.getElementById("redo"); if (r) r.onclick = function () { start(wrongHere, "Refazendo erros", false); };
+    document.getElementById("back").onclick = function () { session = null; render(); };
+  }
+
+  function render() {
+    header();
+    if (!store.plan) { session = null; gate(); return; }
+    if (!session) home();
+    else if (session.done) result();
+    else question();
+  }
+  render();
+})();
+</script>
+
+</body>
+</html>
