@@ -111,6 +111,8 @@ main { padding-block: 22px 48px; }
 .subject .go { width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; background: var(--paper); }
 .subject .go svg { width: 18px; height: 18px; }
 
+.demo-box { border-top: 1px dashed var(--line); padding-top: 16px; display: flex; flex-direction: column; gap: 10px; }
+.demo-box p { color: var(--ink-2); font-size: 14.5px; }
 .upsell { border: 2px solid var(--gold); background: #0e0e13; color: #f3efe6; border-radius: 18px; padding: 18px; display: flex; flex-direction: column; gap: 10px; }
 .upsell b { color: var(--gold); }
 .upsell p { color: #c9c2b2; font-size: 14.5px; }
@@ -211,8 +213,11 @@ var DATA = {"materias": {"pt": "Língua Portuguesa", "rlm": "Raciocínio Lógico
   try { var raw = localStorage.getItem(KEY); if (raw) store = Object.assign(store, JSON.parse(raw)); } catch (e) {}
   function save() { try { localStorage.setItem(KEY, JSON.stringify(store)); } catch (e) {} }
 
-  function available() { return Q.filter(function (q) { return store.plan === "pro" || q.t === "ess"; }); }
-  function lockedCount() { return store.plan === "pro" ? 0 : Q.filter(function (q) { return q.t === "pro"; }).length; }
+  /* amostra grátis: as 2 primeiras questões do Essencial de cada matéria */
+  var DEMO = (function () { var n = {}; return Q.filter(function (q) { if (q.t !== "ess") return false; n[q.m] = (n[q.m] || 0) + 1; return n[q.m] <= 2; }).map(function (q) { return q.id; }); })();
+  function available() { return Q.filter(function (q) { return store.plan === "demo" ? DEMO.indexOf(q.id) >= 0 : (store.plan === "pro" || q.t === "ess"); }); }
+  function lockedCount() { return store.plan === "pro" ? 0 : store.plan === "demo" ? Q.length - DEMO.length : Q.filter(function (q) { return q.t === "pro"; }).length; }
+  function startDemo() { store.plan = "demo"; save(); render(); toast("Amostra grátis liberada: " + DEMO.length + " questões"); }
   function stats(list) {
     var done = 0, ok = 0;
     list.forEach(function (q) { var a = store.ans[q.id]; if (a) { done++; if (a.ok) ok++; } });
@@ -239,7 +244,7 @@ var DATA = {"materias": {"pt": "Língua Portuguesa", "rlm": "Raciocínio Lógico
   }
   function header() {
     var chip = document.getElementById("plan-chip"), home = document.getElementById("btn-home");
-    chip.hidden = !store.plan; chip.textContent = store.plan === "pro" ? "PRO" : "Essencial";
+    chip.hidden = !store.plan; chip.textContent = store.plan === "pro" ? "PRO" : store.plan === "demo" ? "Grátis" : "Essencial";
     chip.className = "plan-chip" + (store.plan === "pro" ? " pro" : "");
     home.hidden = !(store.plan && session);
   }
@@ -256,7 +261,10 @@ var DATA = {"materias": {"pt": "Língua Portuguesa", "rlm": "Raciocínio Lógico
       '<input id="code" name="code" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="Digite o seu código" required></div>' +
       '<p class="err" id="gate-err" hidden>Código não reconhecido. Confira as letras e os números do e-mail da compra.</p>' +
       '<button class="btn primary block" type="submit">Entrar</button>' +
+      '<div class="demo-box"><p><b>Ainda não comprou?</b> Teste ' + DEMO.length + ' questões comentadas de graça, sem cadastro.</p>' +
+      '<button class="btn ghost block" type="button" id="btn-demo">Testar grátis</button></div>' +
       '</form></section>';
+    document.getElementById("btn-demo").addEventListener("click", startDemo);
     document.getElementById("gate-form").addEventListener("submit", function (e) {
       e.preventDefault();
       var v = document.getElementById("code").value.trim().toUpperCase();
@@ -279,10 +287,16 @@ var DATA = {"materias": {"pt": "Língua Portuguesa", "rlm": "Raciocínio Lógico
         '<span class="go" aria-hidden="true">' + ICON.chev + '</span></button>';
     }).join("");
     var locked = lockedCount();
-    var upsell = locked ? '<div class="upsell"><span class="label" style="color:var(--gold)">Kit Concurso PRO</span>' +
+    var demo = store.plan === "demo";
+    var upsell = !locked ? '' : demo ?
+      '<div class="upsell"><span class="label" style="color:var(--gold)">Você está na amostra grátis</span>' +
+      '<p>Gostou? O kit completo libera <b>+' + locked + ' questões comentadas</b>, os mapas mentais e os resumos das 5 matérias em PDF.</p>' +
+      (CONFIG.linkPro ? '<a class="btn" href="' + esc(CONFIG.linkPro) + '" target="_blank" rel="noopener">Quero o kit completo</a>' : '') +
+      '<button class="btn ghost" type="button" id="btn-code">Já comprei, tenho o código</button></div>' :
+      '<div class="upsell"><span class="label" style="color:var(--gold)">Kit Concurso PRO</span>' +
       '<p><b>+' + locked + ' questões comentadas</b> estão bloqueadas no seu plano. O PRO libera as 100 questões e aprofunda as 5 matérias.</p>' +
       (CONFIG.linkPro ? '<a class="btn" href="' + esc(CONFIG.linkPro) + '" target="_blank" rel="noopener">Conhecer o PRO</a>' : '') +
-      '<button class="btn ghost" type="button" id="btn-code">Já tenho o código PRO</button></div>' : '';
+      '<button class="btn ghost" type="button" id="btn-code">Já tenho o código PRO</button></div>';
 
     app.innerHTML =
       '<div class="stack">' +
@@ -423,6 +437,7 @@ var DATA = {"materias": {"pt": "Língua Portuguesa", "rlm": "Raciocínio Lógico
       '<div class="big">' + ok + '/' + s.list.length + '</div><h1>' + msg + '</h1>' +
       '<p class="muted">' + pct + '% de acerto' + (s.timed ? ' · tempo total ' + fmt(s.secs) : '') + '</p>' +
       '<div class="breakdown">' + rows + '</div></section>' +
+      (store.plan === "demo" && CONFIG.linkPro ? '<div class="upsell"><span class="label" style="color:var(--gold)">Fim da amostra grátis</span><p>No kit completo são <b>até 100 questões comentadas</b>, simulado com cronômetro, caderno de erros e os mapas mentais em PDF.</p><a class="btn" href="' + esc(CONFIG.linkPro) + '" target="_blank" rel="noopener">Ver os kits</a></div>' : '') +
       (wrongHere.length ? '<button class="btn primary block" type="button" id="redo">' + ICON.redo + 'Refazer as ' + wrongHere.length + ' que errei</button>' : '') +
       '<button class="btn ghost block" type="button" id="back">Voltar ao início</button></div>';
     var r = document.getElementById("redo"); if (r) r.onclick = function () { start(wrongHere, "Refazendo erros", false); };
@@ -431,6 +446,7 @@ var DATA = {"materias": {"pt": "Língua Portuguesa", "rlm": "Raciocínio Lógico
 
   function render() {
     header();
+    if (!store.plan && /[?&]demo\b/.test(location.search)) { startDemo(); return; }
     if (!store.plan) { session = null; gate(); return; }
     if (!session) home();
     else if (session.done) result();
